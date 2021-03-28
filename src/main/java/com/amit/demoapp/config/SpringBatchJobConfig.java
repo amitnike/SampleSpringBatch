@@ -10,6 +10,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.JsonLineMapper;
@@ -17,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import com.amit.demoapp.dto.EventDTO;
 import com.amit.demoapp.listener.JobCompletionNotificationListener;
@@ -34,9 +33,6 @@ public class SpringBatchJobConfig {
 
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
-
-	@Autowired
-	public DataSource dataSource;
 
 	@Bean
 	public ItemReader<EventDTO> eventItemReader() {
@@ -63,27 +59,12 @@ public class SpringBatchJobConfig {
 		return new EventItemProcessor();
 	}
 
-//	@Bean
-//	public JdbcBatchItemWriter<EventDTO> writer(DataSource dataSource) {
-//		return new JdbcBatchItemWriterBuilder<EventDTO>()
-//				.itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-//				.sql("INSERT INTO EventDetails (event_id, event_type,event_host) VALUES (:id, :type, :host)")
-//				.dataSource(dataSource).build();
-//	}
-
 	@Bean
-	public JdbcBatchItemWriter<EventDTO> writer() {
-		JdbcBatchItemWriter<EventDTO> itemWriter = new JdbcBatchItemWriter<EventDTO>();
-		itemWriter.setDataSource(dataSource());
-		itemWriter.setSql("INSERT INTO EventDetails VALUES (:id, :type, :host)");
-		itemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<EventDTO>());
-		return itemWriter;
-	}
-
-	@Bean
-	public DataSource dataSource() {
-		EmbeddedDatabaseBuilder embeddedDatabaseBuilder = new EmbeddedDatabaseBuilder();
-		return embeddedDatabaseBuilder.addScript("classpath:schema-all.sql").setType(EmbeddedDatabaseType.HSQL).build();
+	public JdbcBatchItemWriter<EventDTO> writer(DataSource dataSource) {
+		return new JdbcBatchItemWriterBuilder<EventDTO>()
+				.itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
+				.sql("INSERT INTO EventDetails (event_id, event_type,event_host) VALUES (:id, :type, :host)")
+				.dataSource(dataSource).build();
 	}
 
 	@Bean

@@ -13,8 +13,15 @@ public class EventItemProcessor implements ItemProcessor<EventDTO, EventDTO> {
 	@Override
 	public EventDTO process(final EventDTO event) throws Exception {
 
-		log.info("Converting (" + event + ") into (" + event.getId() + ")");
+		EventDTO returnedEvent;
 
-		return event;
+		log.info("Converting (" + event + ") into (" + event.getId() + ")");
+		if (event.getState().equalsIgnoreCase("FINISHED")) {
+			returnedEvent = event;
+		} else {
+			returnedEvent = null;
+		}
+
+		return returnedEvent;
 	}
 }

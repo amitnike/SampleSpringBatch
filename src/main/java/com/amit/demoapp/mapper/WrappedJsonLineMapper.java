@@ -24,7 +24,6 @@ public class WrappedJsonLineMapper implements LineMapper<EventDTO> {
 		dto.setType((String) eventMap.get("type"));
 		dto.setHost((String) eventMap.get("host"));
 		dto.setTimestamp(Long.valueOf((String) eventMap.get("timestamp")));
-
 		return dto;
 	}
 
