@@ -27,11 +27,11 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
         if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
             log.info("!!! JOB FINISHED! Time to verify the results");
 
-            jdbcTemplate.query("SELECT event_id, event_duration FROM EventDetails",
+            jdbcTemplate.query("SELECT event_id, event_host FROM EventDetails",
                     (rs, row) -> new EventDTO(
                             rs.getString(1),
                             rs.getString(2))
-            ).forEach(eventDTO -> log.info("Found <" + eventDTO+ "> in the database."));
+            ).forEach(eventDTO -> log.info("Found <" + eventDTO.getHost()+ "> in the database."));
         }
     }
 }

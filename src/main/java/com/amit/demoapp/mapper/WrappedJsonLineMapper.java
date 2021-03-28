@@ -30,6 +30,6 @@ public class WrappedJsonLineMapper implements LineMapper<EventDTO> {
 
 	public void setDelegate(JsonLineMapper targetEventsLineMapper) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
